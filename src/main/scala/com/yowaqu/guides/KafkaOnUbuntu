@@ -6,4 +6,6 @@ Concept
     Partition :是物理上的概念，每个Topic包含一个或多个Partition
     Producer: 负责发布消息到Kafka Broker
     Consumer: 消息消费者，向Kafka Broker 读取消息的客户端
+    Consumer Group: 消费者组，一个topic可以对应多个CG,一个CG可以对应多个Consumer。
+        同Topic对应的GC会分别消费所有数据一次，同CG的consumer会争抢消费唯一一次。
 Install
