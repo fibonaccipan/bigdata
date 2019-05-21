@@ -1,0 +1,9 @@
+Concept
+    Broker ：Kafka集群包含一个或多个服务器，这些服务器称为Broker
+    Topic : 每条发布到Kafka集群的消息都有一个类别，这个类别称之为Topic,物理上不同Topic的消息分开存储，
+        逻辑上一个Topic的消息虽然保存在一个或多个Broker上，但是用户只需要指定消息的Topic,即可生产或者消费数据，而不必关心数据存于何处
+        即一个主题的数据
+    Partition :是物理上的概念，每个Topic包含一个或多个Partition
+    Producer: 负责发布消息到Kafka Broker
+    Consumer: 消息消费者，向Kafka Broker 读取消息的客户端
+Install
