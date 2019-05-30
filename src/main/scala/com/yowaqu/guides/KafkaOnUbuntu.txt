@@ -29,3 +29,6 @@ create Producer
 
 crate Consumer
     ./bin/kafka-console-consumer.sh --bootstrap-server host:9092 --topic test_topic --from-beginning
+
+
+参考:blog.csdn.net/yundanfengqingfeng/article/details/84781852
