@@ -12,3 +12,20 @@ Concept
 
 Install
 
+    Install zookeeper first
+    解压->配置ZOOKEEPER_HOME，加入path-> 默认zookeeper/conf/zoo.cfg-> ./zkServer.sh start
+
+    解压kafka 到/usr/local/kafka->配置config/service.properties 设置 log.dirs = xxx 和 listeners=PLAINTEXT://host:9092
+
+start
+    ./bin/kafka-server-start.sh -daemon config/server.properties
+    jps查看
+
+create Topic
+    ./bin/kafka-topics.sh --create --zookeeper host:2181 --replication-factor 1 --partitions 1 --topic test-topic
+
+create Producer
+    ./bin/kafka-console-producer.sh --broker-list host:9092 --topic test_topic
+
+crate Consumer
+    ./bin/kafka-console-consumer.sh --bootstrap-server host:9092 --topic test_topic --from-beginning
