@@ -36,7 +36,7 @@ create Topic
 create Producer
     ./bin/kafka-console-producer.sh --broker-list host:9092 --topic test_topic
 
-crate Consumer
+create Consumer
     ./bin/kafka-console-consumer.sh --bootstrap-server host:9092 --topic order_topic1 --from-beginning
 
 查询topic
@@ -55,3 +55,7 @@ crate Consumer
 -- 其他机制
 
 以上参考：bolg.csdn.net/zhanaolu4821/article/details/91075299
+
+
+--kafka 文件的存储机制
+www.cnblogs.com/jun1019/p/6256514.html

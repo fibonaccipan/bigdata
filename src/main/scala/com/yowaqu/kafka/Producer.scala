@@ -1,10 +1,12 @@
-package com.yowaqu.sparkstreaming
+package com.yowaqu.kafka
 
+// 参考 https://blog.csdn.net/wangzhanzheng/article/details/80801059
 import java.util.Properties
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord,ProducerConfig}
+
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
+import org.json.JSONObject
 
 import scala.io.Source
-import org.json.JSONObject
 
 object Producer {
   def main(args: Array[String]): Unit = {
@@ -42,9 +44,12 @@ object Producer {
       //  json对象转为String 并使用send发送出去
       val tmpjson = ods.randomJson
       producer.send(new ProducerRecord("order-topic1",tmpjson.toString))
-      Thread.sleep(13000)
+      Thread.sleep(5000)
       i+=1
-      println(i)
+      if(i<10)
+        println(tmpjson)
+      else
+        println(i)
     }
     producer.close()
   }
@@ -79,3 +84,4 @@ class Orders(){
 class JSONHeader(line:String){
   val value:Array[String] = line.split("\t")
 }
+
