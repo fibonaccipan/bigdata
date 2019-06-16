@@ -4,8 +4,15 @@ Concept
         逻辑上一个Topic的消息虽然保存在一个或多个Broker上，但是用户只需要指定消息的Topic,即可生产或者消费数据，而不必关心数据存于何处
         即一个主题的数据
     Partition :是物理上的概念，每个Topic包含一个或多个Partition
+        partition replica :备份安装顺序 p1 依次存放于broker1、broker2，replica数需要小于broker数。 p之间会选举出partition leader
+            其余为follower，kafka先写leader,再由leader push给follower。
+        partition 分配
+            先将n个broker和partition排序，将第i个分区分配到 i%n 个broker上,将第i个分区的第j个备份分配到（i+j）%n 个broker上
     Producer: 负责发布消息到Kafka Broker
+        消息投送可靠性：1.只发送不管送达，2.确保送达所有主分区和备份分区，3.只确保送达主分区
+        正常关闭broker会flush缓存，不会丢失数据。非正常会导致丢失，可以通过配置flush周期和阀值来减小
     Consumer: 消息消费者，向Kafka Broker 读取消息的客户端
+        消息消费可靠性：offset 分高级api和低级api。高级由zk管理但会出现消费中崩溃的情况，亦可以使用低级API自己提交offset。
     Consumer Group: 消费者组，一个topic可以对应多个CG,一个CG可以对应多个Consumer。
         同Topic对应的GC会分别消费所有数据一次，同CG的consumer会分配分区 完全消费，最佳分配是consumer线程和分区数相等，新增或删除partition和
         Consumer会触发Rebalance 。同一个partition 不能被不同的Consumer 消费。
@@ -23,13 +30,28 @@ start
     jps查看
 
 create Topic
-    ./bin/kafka-topics.sh --create --zookeeper host:2181 --replication-factor 1 --partitions 1 --topic test-topic
+    ./bin/kafka-topics.sh --create --zookeeper host:2181 --replication-factor 1 --partitions 2 --topic test-topic2
+    注意zk的dataDir 和kafka的log.dirs不要放到/tmp下，否则重启消失
 
 create Producer
     ./bin/kafka-console-producer.sh --broker-list host:9092 --topic test_topic
 
 crate Consumer
-    ./bin/kafka-console-consumer.sh --bootstrap-server host:9092 --topic test_topic --from-beginning
+    ./bin/kafka-console-consumer.sh --bootstrap-server host:9092 --topic order_topic1 --from-beginning
+
+查询topic
+    询问zookeeper 元数据信息
+    ./bin/kafka-topics.sh --zookeeper host:2181 --list
+    ./bin/kafka-topics.sh --zookeeper host:2181 --describe --topic tpcNm
+删除topic
+    ./bin/kafka-run-class.sh kafka.admin.DeleteTopicCommand --zookeeper host:2181 --topic tpcNm
+增加topic分区
+    ./bin/kafka-topics.sh --zookeeper host:2181 --alter --topic tpcNm --partitions 5
 
 
-参考:blog.csdn.net/yundanfengqingfeng/article/details/84781852
+
+以上参考:blog.csdn.net/yundanfengqingfeng/article/details/84781852
+
+-- 其他机制
+
+以上参考：bolg.csdn.net/zhanaolu4821/article/details/91075299
