@@ -37,14 +37,14 @@ create Producer
     ./bin/kafka-console-producer.sh --broker-list host:9092 --topic test_topic
 
 create Consumer
-    ./bin/kafka-console-consumer.sh --bootstrap-server host:9092 --topic order_topic1 --from-beginning
+    ./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic order-topic1 --from-beginning
 
 查询topic
     询问zookeeper 元数据信息
-    ./bin/kafka-topics.sh --zookeeper host:2181 --list
+    ./bin/kafka-topics.sh --zookeeper localhost:2181 --list
     ./bin/kafka-topics.sh --zookeeper host:2181 --describe --topic tpcNm
 删除topic
-    ./bin/kafka-run-class.sh kafka.admin.DeleteTopicCommand --zookeeper host:2181 --topic tpcNm
+    ./bin/kafka-run-class.sh kafka.admin.DeleteTopicCommand --zookeeper localhost:2181 --topic tpcNm
 增加topic分区
     ./bin/kafka-topics.sh --zookeeper host:2181 --alter --topic tpcNm --partitions 5
 
