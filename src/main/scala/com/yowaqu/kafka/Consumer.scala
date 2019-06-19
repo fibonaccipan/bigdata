@@ -44,7 +44,7 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
     //实例化kfk消费者
     kafkaConsumer = new KafkaConsumer[String,String](props)
     //消费者订阅主题
-    kafkaConsumer.subscribe( Arrays.asList(this.topic))
+    kafkaConsumer.subscribe( util.Arrays.asList(this.topic))
     val batchSize:Int = 2 //设置缓存区大小
     val buffer = ArrayBuffer[ConsumerRecord[String,String]]()
     try{
@@ -101,7 +101,7 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
           val offset:Long = buffer.last.offset() // offset 需要加一，
           val tp = new TopicPartition(topic,0)
           val ofst = new OffsetAndMetadata(offset)
-          val map:Map[TopicPartition,OffsetAndMetadata] = new HashMap()
+          val map:util.Map[TopicPartition,OffsetAndMetadata] = new util.HashMap()
           map.put(tp,ofst)
           buffer.foreach(r => println(s"partition= ${r.partition()},offset= ${r.offset},key= ${r.key},value=${r.value}"))
           //使用TopicPartition 和 offsetAndMetaData对象 构建map 提交offset
@@ -114,7 +114,7 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
     }
   }
 //  offset 手动按消费者提交
-  def manualCommitCnsmr={
+  def manualCommitCnsmr:Unit = {
     //设置关闭自动提交
     props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,"false")
     //实例化kfk消费者
@@ -137,14 +137,14 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
     }
   }
 //  offset 自动提
-  def autoCommit ={
+  def autoCommit:Unit ={
     //设置自动提交参数
     props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,"true")
     props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG,"1000")
     //实例化kafka消费者
     kafkaConsumer = new KafkaConsumer[String,String](props)
     //消费者订阅主题
-    kafkaConsumer.subscribe(Arrays.asList(this.topic))
+    kafkaConsumer.subscribe(util.Arrays.asList(this.topic))
     while(true){
       val kafkaRecodes = kafkaConsumer.poll(Duration.ofMillis(10000))
       val recodes = kafkaRecodes.records(topic).iterator
