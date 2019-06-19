@@ -44,7 +44,7 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
     //实例化kfk消费者
     kafkaConsumer = new KafkaConsumer[String,String](props)
     //消费者订阅主题
-    kafkaConsumer.subscribe(Arrays.asList(this.topic))
+    kafkaConsumer.subscribe( Arrays.asList(this.topic))
     val batchSize:Int = 2 //设置缓存区大小
     val buffer = ArrayBuffer[ConsumerRecord[String,String]]()
     try{
@@ -79,7 +79,7 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
   }
 
 //  offset 手动按分区提交
-  def manualCommitPartit={
+  def manualCommitPartit:Unit={
     //关闭 offset 自动提交
     props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,"false")
     //实例化kfk消费者

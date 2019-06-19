@@ -34,7 +34,7 @@ object Producer {
     val file = Source.fromFile("/home/fibonacci/data/order.txt")
     var lines = file.getLines().toArray
     file.close()
-    implicit val jsonHeader = new JSONHeader(lines.head) //设置json头为隐式值
+    implicit val jsonHeader:JSONHeader = new JSONHeader(lines.head) //设置json头为隐式值
     lines = lines.drop(1)
     val ods = new Orders(lines)
 //    ods.jsonHead.foreach(println)
@@ -71,7 +71,7 @@ class Orders(){
     jsonHead = header.value
   }
 
-  def randomJson={
+  def randomJson:JSONObject = {
     val tmpJson = new JSONObject()
     val jsonOrder = randomOrder
     for(i <- jsonHead.indices){
