@@ -66,7 +66,7 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
           if(buffer.length >= batchSize){
             buffer.foreach(r => println(s"partition= ${r.partition()},offset= ${r.offset},key= ${r.key},value=${r.value}"))
             val offset:Long = buffer.last.offset()+1
-            val map:Map[TopicPartition,OffsetAndMetadata] = new HashMap()
+            val map:util.Map[TopicPartition,OffsetAndMetadata] = new util.HashMap()
             map.put(tp,new OffsetAndMetadata(offset))
             kafkaConsumer.commitSync(map)
             buffer.clear()
@@ -85,7 +85,7 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
     //实例化kfk消费者
     kafkaConsumer = new KafkaConsumer[String,String](props)
     //消费者订阅主题
-    kafkaConsumer.subscribe(Arrays.asList(this.topic))
+    kafkaConsumer.subscribe(util.Arrays.asList(this.topic))
     val batchSize:Int = 10 //设置缓存区大小
     val buffer = ArrayBuffer[ConsumerRecord[String,String]]()
     try{
@@ -120,7 +120,7 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
     //实例化kfk消费者
     kafkaConsumer = new KafkaConsumer[String,String](props)
     //消费者订阅主题
-    kafkaConsumer.subscribe(Arrays.asList(this.topic))
+    kafkaConsumer.subscribe(util.Arrays.asList(this.topic))
     val batchSize:Int = 33 //设置缓存区大小
     val buffer = ArrayBuffer[ConsumerRecord[String,String]]()
     while(true){
