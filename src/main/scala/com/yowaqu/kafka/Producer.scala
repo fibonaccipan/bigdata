@@ -44,7 +44,7 @@ object Producer {
       //  json对象转为String 并使用send发送出去
       val tmpjson = ods.randomJson
       producer.send(new ProducerRecord("order-topic1",tmpjson.toString))
-      Thread.sleep(500)
+      Thread.sleep(100)
       i+=1
       if(i<10)
         println(tmpjson)

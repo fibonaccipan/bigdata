@@ -1,4 +1,4 @@
-// kafka多线程 多个消费者消费示例
+// kafka多线程 每个线程一个消费者消费示例
 package com.yowaqu.kafka
 
 import java.time.Duration
@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
 
 object MutiThreadConsumer {
   def main(args: Array[String]): Unit = {
-    val consumerGroup = new ConsumerGroup(4,"MY_GROUP1","order-topic1",Seq("localhost:9092"))
+    val consumerGroup = new ConsumerGroup(1,"MY_GROUP1","order-topic1",Seq("localhost:9092"))
     consumerGroup.execute()
   }
 }
@@ -31,6 +31,7 @@ class ConsumerRunnable(val brokerSeq:Seq[String],val groupId:String,val topic:St
   val props = new Properties()
   props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,brokerSeq.mkString(","))
   props.put(ConsumerConfig.GROUP_ID_CONFIG,groupId)
+  props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,"true")
   props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.StringDeserializer")
   props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.StringDeserializer")
   val kafkaConsumer:KafkaConsumer[String,String] = new KafkaConsumer[String,String](this.props)
@@ -55,6 +56,11 @@ class ConsumerRunnable(val brokerSeq:Seq[String],val groupId:String,val topic:St
         println(Thread.currentThread().getName," consumed partition:",
           record2.partition()," the message with offset:",record2.offset())
 
+        //自动 Consumer rebalance 实验失败
+//        if(Thread.currentThread().getName == "Thread-1" && {cnt+=1;cnt} > 24){
+//          Thread.currentThread().stop()
+//        }
+//        println(Thread.currentThread().isAlive,"-"*50)
       }
     }
   }
