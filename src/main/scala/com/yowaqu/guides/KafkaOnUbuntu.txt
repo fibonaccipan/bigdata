@@ -42,7 +42,8 @@ create Consumer
 查询topic
     询问zookeeper 元数据信息
     ./bin/kafka-topics.sh --zookeeper localhost:2181 --list
-    ./bin/kafka-topics.sh --zookeeper host:2181 --describe --topic tpcNm
+    ./bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic tpcNm
+    ./bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 -describe --group MY_GROUP1
 删除topic
     ./bin/kafka-run-class.sh kafka.admin.DeleteTopicCommand --zookeeper localhost:2181 --topic tpcNm
 增加topic分区

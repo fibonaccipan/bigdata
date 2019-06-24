@@ -2,7 +2,7 @@ package com.yowaqu.kafka
 
 import java.time.Duration
 import java.util
-import java.util.{Arrays, HashMap, Properties,Map}
+import java.util.Properties
 
 //import kafka.common.OffsetAndMetadata
 import org.apache.kafka.clients.consumer.{ConsumerConfig, ConsumerRecord, KafkaConsumer,OffsetAndMetadata}
@@ -14,10 +14,11 @@ import scala.collection.mutable.ArrayBuffer
 object Consumer {
   def main(args: Array[String]): Unit = {
     val consumer = new Consumer(Seq("localhost:9092"),"order-topic1","MY_GROUP1")
-//    consumer.autoCommit
+    consumer.autoCommit
 //    consumer.manualCommitCnsmr
-//    consumer.manualCommitPartit
-    consumer.manualCommitPartitAll
+//    consumer.manualCommitPartit(2)
+//    consumer.manualCommitPartitAll
+//     offset由消费者管理， 暂不实践
   }
 }
 
@@ -45,7 +46,7 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
     kafkaConsumer = new KafkaConsumer[String,String](props)
     //消费者订阅主题
     kafkaConsumer.subscribe( util.Arrays.asList(this.topic))
-    val batchSize:Int = 2 //设置缓存区大小
+    val batchSize:Int = 100 //设置缓存区大小
     val buffer = ArrayBuffer[ConsumerRecord[String,String]]()
     try{
       while(true){
@@ -79,14 +80,14 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
   }
 
 //  offset 手动按分区提交
-  def manualCommitPartit:Unit={
+  def manualCommitPartit(partition:Int):Unit={
     //关闭 offset 自动提交
     props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,"false")
     //实例化kfk消费者
     kafkaConsumer = new KafkaConsumer[String,String](props)
     //消费者订阅主题
     kafkaConsumer.subscribe(util.Arrays.asList(this.topic))
-    val batchSize:Int = 10 //设置缓存区大小
+    val batchSize:Int = 40 //设置缓存区大小
     val buffer = ArrayBuffer[ConsumerRecord[String,String]]()
     try{
       while(true){
@@ -99,7 +100,7 @@ class Consumer(brokerSeq:Seq[String],topic:String,groupId:String){
           buffer += records.next()
         if(buffer.length >= batchSize){
           val offset:Long = buffer.last.offset() // offset 需要加一，
-          val tp = new TopicPartition(topic,0)
+          val tp = new TopicPartition(topic,partition)
           val ofst = new OffsetAndMetadata(offset)
           val map:util.Map[TopicPartition,OffsetAndMetadata] = new util.HashMap()
           map.put(tp,ofst)
