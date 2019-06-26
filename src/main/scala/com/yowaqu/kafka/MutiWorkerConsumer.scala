@@ -18,7 +18,7 @@ object MutiWorkerConsumer {
     } catch {
       case e:InterruptedException => println(e)
     }
-    consumers.shutdown
+    consumers.shutdown()
   }
 }
 
@@ -54,7 +54,7 @@ class ConsumerHandler(brokerSeq:Seq[String],groupId:String,val topic:String){
     }
   }
 
-  def shutdown:Unit={
+  def shutdown():Unit={
     if(this.kafkaConsumer != null)
       kafkaConsumer.close()
     if(this.executors != null)
@@ -64,8 +64,9 @@ class ConsumerHandler(brokerSeq:Seq[String],groupId:String,val topic:String){
         println("Timeout  ...  Ignore for this case")
       }
     }catch{
-      case ignored:InterruptedException => {println("Other thread interrupted this shutdown ,ignore for this case.", ignored)
-        Thread.currentThread().interrupt()}
+      case ignored:InterruptedException =>
+        println("Other thread interrupted this shutdown ,ignore for this case.", ignored)
+        Thread.currentThread().interrupt()
     }
   }
 }
