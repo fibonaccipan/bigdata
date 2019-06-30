@@ -1,0 +1,68 @@
+Install 单机
+	tar -xvzf hadoop-2.8.5.tar.gz
+	sudo mv hadoop-2.8.5 /usr/local/
+
+	vim /etc/profile 追加
+	export HADOOP_HOME=/usr/local/hadoop-2.8.5
+	export HADOOP_INSTALL=$HADOOP_HOME
+	export HADOOP_MAPRED_HOME=$HADOOP_HOME
+	export HADOOP_COMMON_HOME=$HADOOP_HOME
+	export HADOOP_HDFS_HOME=$HADOOP_HOME
+	export YARN_HOME=$HADOOP_HOME
+	export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+
+	export PATH=$HADOOP_HOME/sbin:$HADOOP_HOME/bin:$PATH
+	export CLASSPATH=$($HADOOP_HOME/bin/hadoop classpath):$CLASSPATH
+	
+	source /etc/profile
+	修改配置文件
+	1) vim $HADOOP_HOME/etc/hadoop/hadoop-env.sh 末尾追加 export JAVA_HOME=/usr/local/jdk
+	2) vim $HADOOP_HOME/etc/hadoop/core-site.xml 增加
+		<configuration>
+			<property>
+				<name>fs.default.name</name>
+				<value>hdfs://localhost:9000</value>
+			</property>
+		</configuration>
+	3) vim $HADOOP_HOME/etc/hadoop/hdfs-site.xml 增加
+		<configuration>
+			<property>
+				<name>dfs.replication</name>
+				<value>1</value>
+			</property>
+			<property>
+				<name>dfs.name.dir</name>
+				<value>/home/${user}/data/hadoop/namenode</value>
+			</property>
+			<property>
+				<name>dfs.data.dir</name>
+				<value>/home/${user}/data/hadoop/datanode</value>
+			</property>
+		</configuration>
+	4) cp $HADOOP_HOME/etc/hadoop/mapred-site.xml.template $HADOOP_HOME/etc/hadoop/mapred-site.xml
+	vim $HADOOP_HOME/etc/hadoop/mapred-site.xml 增加
+	<configuration>
+	        <property>
+                	<name>mapreduce.framework.name</name>
+	        	<value>yarn</value>
+		</property>
+	</configuration>
+	5) vim $HADOOP_HOME/etc/hadoop/yarn-site.xml 增加
+	<configuration>
+		<!-- Site specific YARN configuration properties -->
+	        <property>
+        	        <name>yarn.nodemanager.aux-services</name>
+        	        <value>mapreduce_shuffle</value>
+        	</property>
+	</configuration>
+
+	安装SSH
+		sudo apt-get install openssh-server
+		/etc/init.d/ssh start
+		systemctl enable shh  设置ssh 开机启动
+	配置ssh免登陆
+	配置hadoop_env.sh 和yarn_env.sh 配置 log存放目录
+	初始化 hadoop: hdfs namenode -format
+	start-all.sh 启动
+	解决warn 启动时不能加载本地库
+
