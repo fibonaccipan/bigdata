@@ -43,7 +43,10 @@ object Producer {
     while(true){
       //  json对象转为String 并使用send发送出去
       val tmpjson = ods.randomJson
-      producer.send(new ProducerRecord("order-topic1",tmpjson.toString))
+//      producer.send(new ProducerRecord[String,String]("order-topic",0,null,tmpjson.toString)) //直接指定分区
+      producer.send(new ProducerRecord("order-topic1",tmpjson.get("area_code").toString,tmpjson.toString)) //使用area_code 作为key保证分区内数据有序性
+//      更多的 分区指定的问题可以通过 实现Partitioner接口 重写一个类，使用props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG,"xxx")
+//      producer.send(new ProducerRecord("order-topic1",tmpjson.toString)) //随机分配卡夫卡分区
       Thread.sleep(300)
       i+=1
       if(i<10)
@@ -74,7 +77,7 @@ class Orders(){
   def randomJson:JSONObject = {
     val tmpJson = new JSONObject()
     val jsonOrder = randomOrder
-    for(i <- jsonHead.indices){
+    for(i <- jsonHead.indices if Array(0,1,2,4,6,7,8,9,10).contains(i)){
       tmpJson.put(jsonHead(i),jsonOrder.split("\t")(i))
     }
     tmpJson

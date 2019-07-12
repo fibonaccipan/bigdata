@@ -1,0 +1,14 @@
+Install Hbase
+	install zk 
+	tar -xvzf hbase.tar.gz
+vim /etc/profile add export HBASE_HOME=dir and PATH=$PATH:$HBASE_HOME/bin
+vim $HBASE_HOME/conf/hbase-env.sh export JAVA_HOME 
+	AND export HBASE_MANAGES_ZK=true/false #false :use the external zk
+vim $HBASE_HOME/conf/hbase-site.xml 
+	add hbase.rootdir-> hdfs:// dir
+	hbase.zookeeper.quorum->zkhost:2181
+	hbase.cluster.distributed->true # will not start zkServer standalone
+Use Hbase
+	CLI:hbase shell
+
+	create 'order', {NAME=>'info',VERSIONS=>1} # order:tname,info:column Family,1:only 1 version

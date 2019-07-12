@@ -31,7 +31,7 @@ object DirectKafkaManualOffset {
       rdd.foreachPartition(iter =>{
         iter.foreach(line =>println(line.value()))
       })
-      Dstream.asInstanceOf[CanCommitOffsets].commitAsync((offsetRanges))
+      Dstream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
       println(Thread.currentThread().getName)
     })
     ssc.start()
