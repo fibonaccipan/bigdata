@@ -77,7 +77,7 @@ class Orders(){
   def randomJson:JSONObject = {
     val tmpJson = new JSONObject()
     val jsonOrder = randomOrder
-    for(i <- jsonHead.indices if Array(0,1,2,4,6,7,8,9,10).contains(i)){
+    for(i <- jsonHead.indices if Array(0,1,2,4,6,7,8,9,10,13).contains(i)){
       tmpJson.put(jsonHead(i),jsonOrder.split("\t")(i))
     }
     tmpJson
