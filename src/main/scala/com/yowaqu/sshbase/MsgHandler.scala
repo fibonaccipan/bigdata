@@ -49,7 +49,8 @@ class MsgHandler extends Serializable {
             true
           */
             // scala 简化写法
-            fieldsList.reduce(jsonObject.containsKey(_) && jsonObject.containsKey(_))
+//            fieldsList.reduce(jsonObject.containsKey(_) && jsonObject.containsKey(_))
+            fieldsList.map(jsonObject.containsKey(_)).reduce(_ && _)
         }else{
             false
         }
@@ -62,7 +63,8 @@ class MsgHandler extends Serializable {
       */
     private def checkJsonValue(jsonObject: JSONObject,fieldsList:Array[String]): Boolean ={
         if(jsonObject != null && fieldsList.length >0){
-            fieldsList.reduce((x,y) => ifInvaildValue(jsonObject.get(x).toString) && ifInvaildValue(jsonObject.get(y).toString))
+            fieldsList.map(jsonObject.get(_).toString).map(ifInvaildValue).reduce(_ && _)
+//            fieldsList.reduce((x,y) => ifInvaildValue(jsonObject.get(x).toString) && ifInvaildValue(jsonObject.get(y).toString))
         }else{
             false
         }
@@ -75,7 +77,7 @@ class MsgHandler extends Serializable {
     private def checkAll(jsonStr:String,configManager:ConfigManager): Boolean ={
         if(checkJsonFormat(jsonStr)){
             val jsonObject:JSONObject = JSON.parseObject(jsonStr)
-            checkJsonKey(jsonObject,configManager.getProperty("must.field.key").split(",")) &&
+            checkJsonKey(jsonObject,configManager.getProperty("must.fields.key").split(",")) &&
             checkJsonValue(jsonObject,configManager.getProperty("must.fields.value").split(","))
         }else{
             false
@@ -87,7 +89,8 @@ class MsgHandler extends Serializable {
       * @param payAmnt
       */
     private def filterPayAmnt(payAmnt:String):Boolean={
-        payAmnt.toDouble >= 100
+        payAmnt.toDouble >= 10
+//        true
     }
 
     /**
@@ -96,7 +99,24 @@ class MsgHandler extends Serializable {
       */
     private def filterMsg(jsonObject:JSONObject): Boolean ={
         if(jsonObject!=null){
-            filterPayAmnt(jsonObject.getString("pay_amnt"))
+            filterPayAmnt(jsonObject.getString("pay_amount"))
+        }else{
+            false
+        }
+    }
+
+    /**
+      * @param jsonStr
+      * @param configManager
+      */
+    def handlerMsg(jsonStr:String,configManager: ConfigManager):Boolean={
+        if(jsonStr != null && configManager != null){
+            if(checkAll(jsonStr,configManager)){
+                val jsonObject = JSON.parseObject(jsonStr)
+                filterMsg(jsonObject)
+            }else{
+                false
+            }
         }else{
             false
         }
@@ -106,7 +126,25 @@ class MsgHandler extends Serializable {
       *@param v value to be judge
       */
     private def ifInvaildValue(v:String):Boolean={
-        v == null || v.equals("") || v =="-"
+       !{v == null || v.equals("") || v =="-"} // 若值 符合条件 则为无效值 返回 false
     }
 
+    /**
+      *
+      */
+    def getOrderBean(jsonStr:String): Order ={
+        if(jsonStr != null){
+            try{
+                val order:Order = JSON.parseObject(jsonStr,classOf[Order])
+                order
+            }catch{
+                case e:Exception => e.printStackTrace()
+                    println("转换OrderBean失败")
+                    null
+            }
+        }else{
+            null
+        }
+
+    }
 }

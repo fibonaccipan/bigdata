@@ -13,9 +13,10 @@ import java.util.Properties
 
 class ConfigManager(propName:String) extends Serializable {
     private val prop = new Properties()
+    @transient
     private var in:FileInputStream = _
     try{
-        in = new FileInputStream(s"src/main/resources/$propName.properties")
+        in = new FileInputStream(s"src/main/scala/com/yowaqu/resources/$propName.properties")
         this.prop.load(in)
         println("读取配置文件成功")
     }catch {
