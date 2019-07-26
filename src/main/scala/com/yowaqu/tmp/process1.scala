@@ -18,7 +18,7 @@ object process1 {
       }
        city(tmpJson.get("city_code").asInstanceOf[String])= tmpJson.get("city_name").asInstanceOf[String]
     }
-    println((city -= "-").size)
-//      .foreach(x => println(s"put 'city','${x._1}','INFO',{'city_cd':'${x._1}','city_nm':'${x._2}'}"))
+    (city -= "-")
+      .foreach(x => println(s"put 'city','${x._1}','colFmly:city_cd','${x._1}'\nput 'city','${x._1}','colFmly:city_nm','${x._2}'"))
   }
 }
