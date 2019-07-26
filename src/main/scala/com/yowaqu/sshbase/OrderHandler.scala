@@ -28,7 +28,7 @@ object OrderHandler {
     val props = new Properties()
     props.setProperty("metadata.broker.list",configManager.getProperty("metadata.broker.list"))
 //    implicit val formats = DefaultFormats
-    val Dstream = KafkaUtils.createDirectStream[String, String](ssc, PreferConsistent, Subscribe[String, String](Array("order-topic1"), kafkaParam))
+    val Dstream = KafkaUtils.createDirectStream[String, String](ssc, PreferConsistent, Subscribe[String, String](Array(configManager.getProperty("input.topics")), kafkaParam))
     Dstream.foreachRDD(
       rdd =>{
         val offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges

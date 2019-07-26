@@ -47,7 +47,7 @@ object Producer {
       producer.send(new ProducerRecord("order-topic1",tmpjson.get("area_code").toString,tmpjson.toString)) //使用area_code 作为key保证分区内数据有序性
 //      更多的 分区指定的问题可以通过 实现Partitioner接口 重写一个类，使用props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG,"xxx")
 //      producer.send(new ProducerRecord("order-topic1",tmpjson.toString)) //随机分配卡夫卡分区
-      Thread.sleep(2000)
+      Thread.sleep(500)
       i+=1
       if(i<10)
         println(tmpjson)
