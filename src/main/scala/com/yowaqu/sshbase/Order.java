@@ -1,5 +1,7 @@
 package com.yowaqu.sshbase;
 
+import com.alibaba.fastjson.JSON;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,15 @@ import java.io.Serializable;
 class Order implements Serializable {
     private String id;
     private String order_itemid;
+    private String dept_code;
+    private String brand_code;
+    private String general_gds_code;
+    private String general_gds_name;
+    private String area_code;
+    private String area_name;
+    private String city_code;
+    private String city_name;
+    private String pay_amount;
 
     public String getId() {
         return id;
@@ -85,6 +96,14 @@ class Order implements Serializable {
         this.city_code = city_code;
     }
 
+    public String getCity_name() {
+        return city_name;
+    }
+
+    public void setCity_name(String city_name) {
+        this.city_name = city_name;
+    }
+
     public String getPay_amount() {
         return pay_amount;
     }
@@ -92,14 +111,4 @@ class Order implements Serializable {
     public void setPay_amount(String pay_amount) {
         this.pay_amount = pay_amount;
     }
-
-    private String dept_code;
-    private String brand_code;
-    private String general_gds_code;
-    private String general_gds_name;
-    private String area_code;
-    private String area_name;
-    private String city_code;
-    private String pay_amount;
-
 }

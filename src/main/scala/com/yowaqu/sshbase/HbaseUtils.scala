@@ -1,5 +1,7 @@
 package com.yowaqu.sshbase
 
+import java.io.Serializable
+
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.{CellScanner, CellUtil, HBaseConfiguration, TableName}
 import org.apache.hadoop.hbase.client._
@@ -17,8 +19,11 @@ import scala.collection.mutable
   * according http://blog.itpub.net/31506529/viewspace-2214159
   */
 class HbaseUtils(quorum:String,port:String) extends Serializable {
+
     private var configuration:Configuration = _
+
     private var conn:Connection = _
+
     implicit def MMap2Map(map:mutable.Map[String,String]):Map[String,String]=map.toMap
     setHbaseConfig(quorum,port)
 
