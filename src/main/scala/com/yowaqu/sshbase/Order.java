@@ -23,6 +23,18 @@ class Order implements Serializable {
     private String city_code;
     private String city_name;
     private String pay_amount;
+    private String time;
+
+
+//    public String getDayHour(){}
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getId() {
         return id;

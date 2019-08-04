@@ -11,8 +11,8 @@ import org.apache.kafka.clients.consumer.{ConsumerConfig, ConsumerRecord, KafkaC
 
 object MutiWorkerConsumer {
   def main(args: Array[String]): Unit = {
-    val consumers = new ConsumerHandler(Seq("localhost:9092"),"MY_GROUP1","order-topic1")
-    consumers.execute(5)
+    val consumers = new ConsumerHandler(Seq("localhost:9092"),"MY_GROUP1","order-topic2")
+    consumers.execute(7)
     try{
       Thread.sleep(1000000)
     } catch {

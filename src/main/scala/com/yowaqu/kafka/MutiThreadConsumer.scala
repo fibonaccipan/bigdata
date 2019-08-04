@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
 
 object MutiThreadConsumer {
   def main(args: Array[String]): Unit = {
-    val consumerGroup = new ConsumerGroup(1,"MY_GROUP1","order-topic1",Seq("localhost:9092"))
+    val consumerGroup = new ConsumerGroup(1,"MY_GROUP2","order-topic2",Seq("localhost:9092"))
     consumerGroup.execute()
   }
 }
@@ -54,7 +54,7 @@ class ConsumerRunnable(val brokerSeq:Seq[String],val groupId:String,val topic:St
       while(records2.hasNext){
         val record2 = records2.next()
         println(Thread.currentThread().getName," consumed partition:",
-          record2.partition()," the message with offset:",record2.offset())
+          record2.partition()," the message with offset:",record2.offset() + record2.value())
 
         //自动 Consumer rebalance 实验失败
 //        if(Thread.currentThread().getName == "Thread-1" && {cnt+=1;cnt} > 24){

@@ -60,9 +60,13 @@ object OrderHandler {
                             if (msgHandler.handlerMsg(line.value(), configManager)) {
                                 val order = msgHandler.getOrderBean(line.value())
                                 if (order != null) {
-                                    val city_name = hbaseUtils.getRowMap("city", order.getCity_code, "colFmly")("city_nm")
-                                    order.setCity_name(city_name)
-                                    (order.getId, order)
+                                    try{
+                                        val city_name = hbaseUtils.getRowMap("city", order.getCity_code, "colFmly")("city_nm")
+                                        order.setCity_name(city_name)
+                                        (order.getId, order)
+                                    } catch {
+                                        case e:Exception => {e.printStackTrace();(order.getId,order)}
+                                    }
                                 }
                                 else
                                     null
@@ -76,13 +80,14 @@ object OrderHandler {
                     cleanStreamRdd.foreachPartition(
                         _.foreach(x => { // x is map[String,Order](order.getId,order)
                             val producer = new KafkaProducer[String, String](props)
-                            producer.send(new ProducerRecord(configManager.getProperty("output.topics"),x._1,JSON.toJSONString(x._2,false)))
+                            producer.send(new ProducerRecord(configManager.getProperty("result.topics"),x._1,JSON.toJSONString(x._2,false)))
+                            println(x._2.getCity_code)
                             producer.close()
 //                            println(x._1 , JSON.toJSONString(x._2,false))
                         })
                     )
                 }
-//                Dstream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
+                Dstream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
             }
         )
         // close producer

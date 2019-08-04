@@ -1,7 +1,7 @@
 package com.yowaqu.kafka
 
 // 参考 https://blog.csdn.net/wangzhanzheng/article/details/80801059
-import java.util.Properties
+import java.util.{Date, Properties}
 
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
 import org.json.JSONObject
@@ -47,7 +47,7 @@ object Producer {
       producer.send(new ProducerRecord("order-topic1",tmpjson.get("area_code").toString,tmpjson.toString)) //使用area_code 作为key保证分区内数据有序性
 //      更多的 分区指定的问题可以通过 实现Partitioner接口 重写一个类，使用props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG,"xxx")
 //      producer.send(new ProducerRecord("order-topic1",tmpjson.toString)) //随机分配卡夫卡分区
-      Thread.sleep(5000)
+      Thread.sleep(6000)
       i+=1
       if(i<10)
         println(tmpjson)
@@ -80,6 +80,7 @@ class Orders(){
     for(i <- jsonHead.indices if Array(0,1,2,4,6,7,8,9,10,13).contains(i)){
       tmpJson.put(jsonHead(i),jsonOrder.split("\t")(i))
     }
+    tmpJson.put("time",new Date().getTime.toString)
     tmpJson
   }
 }
