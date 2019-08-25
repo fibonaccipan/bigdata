@@ -12,3 +12,6 @@ Use Hbase
 	CLI:hbase shell
 
 	create 'order', {NAME=>'info',VERSIONS=>1} # order:tname,info:column Family,1:only 1 version
+
+note:
+    误删文件导致Hbase不可以，需要清空hbase-site.xml记录的三个目录　才能重新使用

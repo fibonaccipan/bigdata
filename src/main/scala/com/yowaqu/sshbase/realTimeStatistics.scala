@@ -6,6 +6,7 @@ import java.util.Date
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.SparkConf
 import org.apache.spark.rdd.RDD
+import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.kafka010.{CanCommitOffsets, HasOffsetRanges, KafkaUtils}
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
@@ -58,12 +59,12 @@ object realTimeStatistics {
         //从kafka　获得数据
         val Dstream = KafkaUtils.createDirectStream[String,String](ssc,PreferConsistent,Subscribe[String,String](Array(tpc),kfkPrm))
         // 对每一条记录　变为　map(时间戳,order)
-        val ObjStream = Dstream.map(line =>{
+        val ObjDStream = Dstream.map(line =>{
             val msgHandler = new MsgHandler()
             if(msgHandler.handlerMsg(line.value(),cfgMngr)){
                 val order = msgHandler.getOrderBean(line.value())
                 if(order != null)
-                    (order.getTime.toLong,order)
+                    (new SimpleDateFormat("yyyyMMddHH").format(order.getTime.toLong),order)
                 else
                     null
             }else{
@@ -72,9 +73,25 @@ object realTimeStatistics {
         }).filter(_ != null)
             .window(Minutes(cfgMngr.getProperty("ssh.window.interval").toInt))
 
-        ObjStream.map(x => (new SimpleDateFormat("yyyy-MM-dd HH").format(new Date(x._1)) ,x._2))
+        val currOrdDStm = ObjDStream
+            .filter(_._1 == new SimpleDateFormat("yyyyMMddHH").format(new Date())) // 去除掉非　本小时段的订单
+//            .map(_._2)
+        currOrdDStm.persist(StorageLevel.MEMORY_ONLY)
 
-            .foreachRDD(_.foreach(line => println(line._1,line._2.getTime)))
+//        currOrdDStm.map(line => (line._1 + "-" + line._2.getCity_code,line._2.getPay_amount.toFloat))
+//            .foreachRDD(_.foreach(x=>println(x._1,x._2)))
+//
+//        currOrdDStm.map(line => (line._1 + "-" + line._2.getCity_code,line._2.getPay_amount.toDouble))
+//            .foreachRDD(_.foreach(println))
+
+
+        currOrdDStm.map(line => (line._1 + "-" + line._2.getCity_code,line._2.getPay_amount.toDouble))
+          .reduceByKey(_+_)
+          .foreachRDD(_.foreach(line => {
+              val hbaseUtils = new HbaseUtils(cfgMngr.getProperty("zk.quorum"), cfgMngr.getProperty("zk.port"))
+              hbaseUtils.insertOneRow("sale_statistic",line._1,"colFmly",Map("sumAmount"->line._2.toString))
+          }))
+
 
 
         Dstream.foreachRDD(rdd =>{

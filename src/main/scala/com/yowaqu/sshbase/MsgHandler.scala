@@ -89,7 +89,7 @@ class MsgHandler extends Serializable {
       * @param payAmnt
       */
     private def filterPayAmnt(payAmnt:String):Boolean={
-        payAmnt.toDouble >= 20
+        payAmnt.toDouble >= 10
 //        true
     }
 

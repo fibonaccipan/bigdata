@@ -1,6 +1,8 @@
 package com.yowaqu.kafka
 
 // 参考 https://blog.csdn.net/wangzhanzheng/article/details/80801059
+import java.sql.{Connection, DriverManager, ResultSet, Statement}
+import java.text.SimpleDateFormat
 import java.util.{Date, Properties}
 
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
@@ -38,16 +40,31 @@ object Producer {
     lines = lines.drop(1)
     val ods = new Orders(lines)
 //    ods.jsonHead.foreach(println)
-
+// init mysql param
+    val mysqlConf=Map[String,String](
+     "driver"->"com.mysql.jdbc.Driver",
+     "url"->"jdbc:mysql://127.0.0.1:3306/bigdata?autoReconnect=true",
+     "username"->"bigdata",
+     "password"->"bigdata"
+    )
+    Class.forName(mysqlConf("driver"))
+    val conn = DriverManager.getConnection(mysqlConf("url"),mysqlConf("username"),mysqlConf("password"))
+    val stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE)
     var i = 0
     while(true){
-      //  json对象转为String 并使用send发送出去
+        Thread.sleep(120)
+        //  json对象转为String 并使用send发送出去
       val tmpjson = ods.randomJson
 //      producer.send(new ProducerRecord[String,String]("order-topic",0,null,tmpjson.toString)) //直接指定分区
       producer.send(new ProducerRecord("order-topic1",tmpjson.get("area_code").toString,tmpjson.toString)) //使用area_code 作为key保证分区内数据有序性
 //      更多的 分区指定的问题可以通过 实现Partitioner接口 重写一个类，使用props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG,"xxx")
 //      producer.send(new ProducerRecord("order-topic1",tmpjson.toString)) //随机分配卡夫卡分区
-      Thread.sleep(6000)
+      insert(conn,tmpjson.get("id").toString,
+          tmpjson.get("order_itemid").toString,
+          tmpjson.get("city_code").toString,
+          tmpjson.get("general_gds_code").toString,
+          tmpjson.get("pay_amount").toString,
+          tmpjson.get("time").toString)
       i+=1
       if(i<10)
         println(tmpjson)
@@ -55,6 +72,20 @@ object Producer {
         println(i)
     }
     producer.close()
+  }
+  def insert(conn: Connection,id:String,orderItemId:String,cityCode:String,gdsCode:String,payAmount:String,time:String): Unit ={
+    try{
+      val prep = conn.prepareStatement("insert into order_info (id,order_itemid,city_code,gds_code,pay_amount,time) values (?,?,?,?,?,?)")
+      prep.setString(1,id)
+      prep.setString(2,orderItemId)
+      prep.setString(3,cityCode)
+      prep.setString(4,gdsCode)
+      prep.setString(5,payAmount)
+      prep.setString(6,new SimpleDateFormat("yyyyMMddHH").format(time.toLong))
+      prep.executeUpdate()
+//    } catch {
+//        case e:Exception => e.printStackTrace()
+    }
   }
 }
 
@@ -81,6 +112,7 @@ class Orders(){
       tmpJson.put(jsonHead(i),jsonOrder.split("\t")(i))
     }
     tmpJson.put("time",new Date().getTime.toString)
+//    tmpJson.put("city_code","025")
     tmpJson
   }
 }

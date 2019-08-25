@@ -2,7 +2,7 @@ package com.yowaqu.sshbase
 
 import java.util.Properties
 
-import com.alibaba.fastjson.{JSON}
+import com.alibaba.fastjson.JSON
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
 import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializer}
 import org.apache.spark.SparkConf
@@ -80,8 +80,8 @@ object OrderHandler {
                     cleanStreamRdd.foreachPartition(
                         _.foreach(x => { // x is map[String,Order](order.getId,order)
                             val producer = new KafkaProducer[String, String](props)
-                            producer.send(new ProducerRecord(configManager.getProperty("result.topics"),x._1,JSON.toJSONString(x._2,false)))
-                            println(x._2.getCity_code)
+//                            producer.send(new ProducerRecord(configManager.getProperty("result.topics"),x._1,JSON.toJSONString(x._2,false)))
+                            println(s"city_cd:${x._2.getCity_code} payAmnt:${x._2.getPay_amount}.")
                             producer.close()
 //                            println(x._1 , JSON.toJSONString(x._2,false))
                         })

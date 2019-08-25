@@ -30,7 +30,7 @@ start
     jps查看
 
 create Topic
-    ./bin/kafka-topics.sh --create --zookeeper host:2181 --replication-factor 1 --partitions 2 --topic test-topic2
+    ./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 2 --topic flink-tpc1
     注意zk的dataDir 和kafka的log.dirs不要放到/tmp下，否则重启消失
 
 create Producer
@@ -60,3 +60,6 @@ create Consumer
 
 --kafka 文件的存储机制
 www.cnblogs.com/jun1019/p/6256514.html
+
+-- spark streaming 基于offset消费kafka
+http://www.itkeyword.com/doc/8350083418638114967
