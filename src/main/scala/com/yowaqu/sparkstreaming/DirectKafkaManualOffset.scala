@@ -27,11 +27,11 @@ object DirectKafkaManualOffset {
     LOG.info("######Streaming start###########")
     val Dstream = KafkaUtils.createDirectStream[String, String](ssc, PreferConsistent, Subscribe[String, String](Array("order-topic1"), kafkaParam))
     Dstream.foreachRDD(rdd =>{
-      val offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+      val offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges // get offset
       rdd.foreachPartition(iter =>{
         iter.foreach(line =>println(line.value()))
       })
-      Dstream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
+      Dstream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges) // commit offset
       println(Thread.currentThread().getName)
     })
     ssc.start()
