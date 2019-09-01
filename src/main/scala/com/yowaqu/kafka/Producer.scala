@@ -52,7 +52,7 @@ object Producer {
     val stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE)
     var i = 0
     while(true){
-        Thread.sleep(120)
+        Thread.sleep(1200)
         //  json对象转为String 并使用send发送出去
       val tmpjson = ods.randomJson
 //      producer.send(new ProducerRecord[String,String]("order-topic",0,null,tmpjson.toString)) //直接指定分区
@@ -81,7 +81,7 @@ object Producer {
       prep.setString(3,cityCode)
       prep.setString(4,gdsCode)
       prep.setString(5,payAmount)
-      prep.setString(6,new SimpleDateFormat("yyyyMMddHH").format(time.toLong))
+      prep.setString(6,new SimpleDateFormat("yyyyMMddHHmm").format(time.toLong))
       prep.executeUpdate()
 //    } catch {
 //        case e:Exception => e.printStackTrace()

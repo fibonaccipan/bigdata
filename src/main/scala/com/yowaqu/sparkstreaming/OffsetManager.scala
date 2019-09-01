@@ -33,13 +33,14 @@ object OffsetManager {
     private def preStmt = getConn
       .prepareStatement("select topic,groupid,prt,offset from offsets " +
         "where topic=? and groupid=?")
-    def apply(topic:String,groupid:String) ={
+
+    def apply(topic:String,groupid:String): Map[TopicPartition, Long] ={
         val stmt = preStmt
         stmt.setString(1,topic)
         stmt.setString(2,groupid)
         val rs = stmt.executeQuery()
-        import scala.collection.mutable._
-        val offsetRange = Map[TopicPartition,Long]()
+        import scala.collection.mutable
+        val offsetRange = mutable.Map[TopicPartition,Long]()
         while(rs.next()){
             offsetRange += new TopicPartition(rs.getString("topic"),rs.getInt("prt")) -> rs.getLong("offset")
         }
