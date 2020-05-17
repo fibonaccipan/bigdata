@@ -1,7 +1,8 @@
 package com.yowaqu.spark
 
-import org.apache.spark.sql.{SparkSession,DataFrame}
-import org.apache.spark.SparkConf
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.SparkSession
+
 
 
 /**
@@ -18,6 +19,9 @@ object Demo1 {
           .setMaster("local[*]")
           .setAppName("sparkDemo1")
 
-        val sparkSession = SparkSession.
+//        val sparkSession = SparkSession
+        val xxx = "sss"
+        println()
+
     }
 }
