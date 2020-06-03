@@ -1,4 +1,4 @@
-package com.yowaqu.spark.highorderfun
+package com.yowaqu.spark.highorderfunc
 
 object closure1 {
     def main(args: Array[String]): Unit = {

@@ -87,7 +87,7 @@ object realTimeStatistics {
 
         currOrdDStm.map(line => (line._1 + "-" + line._2.getCity_code,line._2.getPay_amount.toDouble))
           .reduceByKey(_+_)
-          .foreachRDD(_.foreach(line => {
+          .foreachRDD(_.foreach(line =>{
               val hbaseUtils = new HbaseUtils(cfgMngr.getProperty("zk.quorum"), cfgMngr.getProperty("zk.port"))
               hbaseUtils.insertOneRow("sale_statistic",line._1,"colFmly",Map("sumAmount"->line._2.toString))
           }))
