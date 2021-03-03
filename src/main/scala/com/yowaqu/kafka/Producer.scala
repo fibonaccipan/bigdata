@@ -83,8 +83,8 @@ object Producer {
       prep.setString(5,payAmount)
       prep.setString(6,new SimpleDateFormat("yyyyMMddHHmm").format(time.toLong))
       prep.executeUpdate()
-//    } catch {
-//        case e:Exception => e.printStackTrace()
+    } catch {
+        case e:Exception => e.printStackTrace()
     }
   }
 }

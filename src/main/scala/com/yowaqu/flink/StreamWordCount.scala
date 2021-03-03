@@ -15,6 +15,7 @@ object StreamWordCount {
           .sum(1)
 
         wordCountStream.print().setParallelism(2)
+
         //执行任务
         env.execute("StreamWordCount")
 
