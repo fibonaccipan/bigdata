@@ -82,27 +82,21 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.apache.flink</groupId>
-      <artifactId>flink-streaming-scala_2.12</artifactId>
-      <version>${flink.version}</version>
-    </dependency>
+
+
     <dependency>
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-clients_2.12</artifactId>
       <version>${flink.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.flink</groupId>
-      <artifactId>flink-streaming-scala_2.11</artifactId>
 
-      <version>${flink.version}</version>
-    </dependency>
+
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-graphx_2.12</artifactId>
       <version>3.4.4</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-core_2.12</artifactId>
