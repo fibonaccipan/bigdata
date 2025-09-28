@@ -5,14 +5,14 @@
   <version>1.0-SNAPSHOT</version>
   <inceptionYear>2008</inceptionYear>
   <properties>
-    <scala.version>2.11.8</scala.version>
-    <spark.version>2.3.3</spark.version>
+    <scala.version>2.12.10</scala.version>
+    <spark.version>2.4.8</spark.version>
     <hbase.version>2.0.5</hbase.version>
     <hadoop.version>2.8.5</hadoop.version>
     <hive.version>2.3.5</hive.version>
     <kafka.version>2.2.0</kafka.version>
-    <flink.version>1.9.3</flink.version>
-    <spark.artifactId.version>2.11</spark.artifactId.version>
+    <flink.version>1.7.2</flink.version>
+    <spark.artifactId.version>2.12</spark.artifactId.version>
   </properties>
 
   <repositories>
@@ -68,8 +68,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
-      <artifactId>spark-hive_2.11</artifactId>
-      <version>2.3.3</version>
+      <artifactId>spark-hive_2.12</artifactId>
+      <version>${spark.version}</version>
 <!--      <type>java-source</type>-->
       <exclusions>
         <exclusion>
@@ -84,17 +84,17 @@
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
-      <artifactId>spark-core_2.11</artifactId>
+      <artifactId>spark-core_2.12</artifactId>
       <version>${spark.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
-      <artifactId>spark-streaming_2.11</artifactId>
+      <artifactId>spark-streaming_2.12</artifactId>
       <version>${spark.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
-      <artifactId>spark-sql_2.11</artifactId>
+      <artifactId>spark-sql_2.12</artifactId>
       <version>${spark.version}</version>
       <exclusions>
         <exclusion>
@@ -105,8 +105,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
-      <artifactId>spark-streaming-kafka-0-10_2.11</artifactId>
-      <version>2.3.0</version>
+      <artifactId>spark-streaming-kafka-0-10_2.12</artifactId>
+      <version>3.5.1</version>
             <exclusions>
         <exclusion>
           <groupId>org.apache.kafka</groupId>
@@ -159,7 +159,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-scala_2.11</artifactId>
+      <artifactId>flink-scala_2.12</artifactId>
       <version>${flink.version}</version>
     </dependency>
     <dependency>
@@ -169,7 +169,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-streaming-scala_2.11</artifactId>
+      <artifactId>flink-streaming-scala_2.12</artifactId>
       <version>${flink.version}</version>
     </dependency>
   </dependencies>
@@ -190,21 +190,16 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <scalaVersion>${scala.version}</scalaVersion>
-          <args>
-            <arg>-target:jvm-1.5</arg>
-          </args>
-        </configuration>
+
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.8.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-          <encoding>utf-8</encoding>
+          <source>1.8</source>
+          <target>1.8</target>
+        <encoding>utf-8</encoding>
         </configuration>
         <executions>
           <execution>
@@ -217,48 +212,56 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.9</version>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.2</version>
         <configuration>
-          <downloadSources>true</downloadSources>
-          <buildcommands>
-            <buildcommand>ch.epfl.lamp.sdt.core.scalabuilder</buildcommand>
-          </buildcommands>
-          <additionalProjectnatures>
-            <projectnature>ch.epfl.lamp.sdt.core.scalanature</projectnature>
-          </additionalProjectnatures>
-          <classpathContainers>
-            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-            <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
-          </classpathContainers>
+          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-<!--        <version>3.0.0</version>-->
-        <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-          <archive>
-            <manifest>
-              <mainClass>com.yowaqu</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  <reporting>
-    <plugins>
 <!--      <plugin>-->
-<!--        <groupId>org.scala-tools</groupId>-->
-<!--        <artifactId>maven-scala-plugin</artifactId>-->
+
+<!--      </plugin>-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-assembly-plugin</artifactId>-->
+<!--        <version>3.7.1</version>-->
 <!--        <configuration>-->
-<!--          <scalaVersion>${scala.version}</scalaVersion>-->
+<!--          <descriptorRefs>-->
+<!--            <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--          </descriptorRefs>-->
+<!--          <archive>-->
+<!--            <manifest>-->
+<!--              <mainClass>com.yowaqu</mainClass>-->
+<!--            </manifest>-->
+<!--          </archive>-->
 <!--        </configuration>-->
-<!--        <version>2.15.1</version>-->
+<!--      </plugin>-->
+      <!--      <plugin>-->
+      <!--        <groupId>org.scala-tools</groupId>-->
+      <!--        <artifactId>maven-scala-plugin</artifactId>-->
+      <!--        <configuration>-->
+      <!--          <scalaVersion>${scala.version}</scalaVersion>-->
+      <!--        </configuration>-->
+      <!--        <version>2.15.1</version>-->
+      <!--      </plugin>-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-eclipse-plugin</artifactId>-->
+<!--        <version>2.9</version>-->
+<!--        <configuration>-->
+<!--          <downloadSources>true</downloadSources>-->
+<!--          <buildcommands>-->
+<!--            <buildcommand>ch.epfl.lamp.sdt.core.scalabuilder</buildcommand>-->
+<!--          </buildcommands>-->
+<!--          <additionalProjectnatures>-->
+<!--            <projectnature>ch.epfl.lamp.sdt.core.scalanature</projectnature>-->
+<!--          </additionalProjectnatures>-->
+<!--          <classpathContainers>-->
+<!--            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>-->
+<!--            <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>-->
+<!--          </classpathContainers>-->
+<!--        </configuration>-->
 <!--      </plugin>-->
     </plugins>
-  </reporting>
+  </build>
 </project>
